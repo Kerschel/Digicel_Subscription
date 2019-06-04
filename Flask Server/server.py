@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 import uuid
 from models import Service,Customer,Subscriptions,Agent
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_cors import CORS
 
 app= Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.158/digicel'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+CORS(app)
 
 @app.route('/agent',methods=['POST'])
 def createAgent():
@@ -59,6 +61,19 @@ def addSubscription():
 	db.session.commit()
 	return jsonify({'status': 200, 'msg':'User created'})
 
+
+@app.route('/subscribe/<customer_id>',methods=['GET'])
+def get_subscriptions(customer_id):
+	cust = Customer.query.get(customer_id)
+	subscriptions = cust.subscriptions
+	services=[]
+	for sub in subscriptions:
+  		services.append(sub.service)
+	return jsonify({'status': 200, 'services': services})
+	# sub = Subscriptions(cust_id,service)
+	# db.session.add(sub)
+	# db.session.commit()
+	# return jsonify({'status': 200, 'msg':'User created'})
 	# if value == 1:
 	# 	subscribe = 
 	# 	Subscriptions = Subscriptions.query.filter_by(id=id).first()

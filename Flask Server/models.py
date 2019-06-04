@@ -7,15 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.15
 db = SQLAlchemy(app)
 
 
-class Service(db.Model):
-	__tablename__ = "service"
-	id = db.Column('id',db.Integer, primary_key=True)
-	servicename = db.Column('servicename',db.String(80))
-	price = db.Column('price',db.Float(5))
-
-	def __init__(self, servicename, price):
-		self.servicename = servicename
-		self.price = price
 
 	# def __repr__(self):
 	# 	return '<Service %r>' % self.servicename
@@ -27,7 +18,7 @@ class Customer(db.Model):
 	lastname = db.Column('last_name',db.String(80))
 	email = db.Column('email',db.String(80))
 	contact = db.Column('contact',db.String(80))
-	# subscriptions = db.relationship("Service",backref="Subscriptions")
+	subscriptions = db.relationship("Subscriptions",backref="custID",lazy="select",uselist=True)
 
 	def __init__(self, firstname, lastname,email,contact):
 		self.firstname = firstname
@@ -35,6 +26,25 @@ class Customer(db.Model):
 		self.email = email
 		self.contact = contact
 
+class Subscriptions(db.Model):
+	__tablename__ = "subscriptions"
+	id = db.Column('id',db.Integer, primary_key=True)
+	customer_id = db.Column('customerid',db.Integer,db.ForeignKey('customers.id'))
+	service = db.Column('serviceid')
+
+	def __init__(self, customer_id, service):
+			self.service = service
+			self.customer_id = customer_id
+
+class Service(db.Model):
+	__tablename__ = "service"
+	id = db.Column('id',db.Integer, primary_key=True)
+	servicename = db.Column('servicename',db.String(80))
+	price = db.Column('price',db.Float(5))
+
+	def __init__(self, servicename, price):
+		self.servicename = servicename
+		self.price = price
 
 class Agent(db.Model):
 	__tablename__ = "agent"
@@ -50,15 +60,9 @@ class Agent(db.Model):
 		self.name = name
 		self.email = email
 	
-class Subscriptions(db.Model):
-	__tablename__ = "subscriptions"
-	id = db.Column('id',db.Integer, primary_key=True)
-	custID = db.Column('customerid',db.Integer,db.ForeignKey('customers.id'))
-	service = db.Column('serviceid',db.Integer,db.ForeignKey('service.id'))
 
-	def __init__(self, custID, service):
-		self.service = service
-		self.custID = custID
+
+	
 
 	
 	
