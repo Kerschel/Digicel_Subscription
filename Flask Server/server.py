@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_cors import CORS
 
 app= Flask(__name__)
+# GCP MYSQL database connection
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.158/digicel'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -39,7 +40,6 @@ def createAgent():
 
 @app.route('/customer',methods=['POST'])
 def createCustomer():
-	print ("creating")
 	fname = request.json['first_name']
 	lname = request.json['last_name']
 	contact = request.json['contact']
@@ -51,6 +51,26 @@ def createCustomer():
 	
 	return jsonify({'status': 200, 'msg':'User created'})
 	
+
+@app.route('/customer/<customername>',methods=['GET'])
+def get_customer(customername):
+	cust = Customer.query.filter_by(first_name = customername).all();
+	results=[]
+
+	for user in cust:
+		value = {"firstname":user.firstname,
+			"lastname":user.lastname,
+			"email":user.email,
+			"contact":user.contact}
+		results.append(value)
+	return jsonify({'results': results})
+
+
+	subscriptions = cust.subscriptions
+	services=[]
+	for sub in subscriptions:
+  		services.append(sub.service)
+	return jsonify({'status': 200, 'services': services})
 
 @app.route('/subscribe',methods=['POST'])
 def addSubscription():
@@ -70,6 +90,10 @@ def get_subscriptions(customer_id):
 	for sub in subscriptions:
   		services.append(sub.service)
 	return jsonify({'status': 200, 'services': services})
+
+
+
+	
 	# sub = Subscriptions(cust_id,service)
 	# db.session.add(sub)
 	# db.session.commit()
