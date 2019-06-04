@@ -1,3 +1,0 @@
-# Application
-
-Customer Subscription application
