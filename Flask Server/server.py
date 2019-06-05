@@ -43,6 +43,7 @@ def createCustomer():
 	fname = request.json['first_name']
 	lname = request.json['last_name']
 	contact = request.json['contact']
+	print ( request.json['contact'])
 	email = request.json['email']
 
 	newcustomer = Customer(fname,lname,email,contact)
@@ -54,9 +55,8 @@ def createCustomer():
 
 @app.route('/customer/<customername>',methods=['GET'])
 def get_customer(customername):
-	cust = Customer.query.filter_by(first_name = customername).all();
+	cust = Customer.query.filter_by(firstname = customername).all();
 	results=[]
-
 	for user in cust:
 		value = {"firstname":user.firstname,
 			"lastname":user.lastname,
@@ -65,12 +65,12 @@ def get_customer(customername):
 		results.append(value)
 	return jsonify({'results': results})
 
+@app.route('/service',methods=['GET'])
+def get_all_services():
+  services =	Service.query.all();
+	
+	# return 
 
-	subscriptions = cust.subscriptions
-	services=[]
-	for sub in subscriptions:
-  		services.append(sub.service)
-	return jsonify({'status': 200, 'services': services})
 
 @app.route('/subscribe',methods=['POST'])
 def addSubscription():
@@ -92,7 +92,14 @@ def get_subscriptions(customer_id):
 	return jsonify({'status': 200, 'services': services})
 
 
-
+@app.route("/")
+def helloWorld():
+  	cust = Customer.query.get(1)
+	subscriptions = cust.subscriptions
+	serv=[]
+	for s in subscriptions:
+		serv.append(s.service)
+	return jsonify({'status':200,'services':serv})
 	
 	# sub = Subscriptions(cust_id,service)
 	# db.session.add(sub)
@@ -115,7 +122,6 @@ def get_subscriptions(customer_id):
 # 	def home():
 # 	return render_template("index.html")
 
-app.run()
 # s = Service.query.all()
 # for a in s:
 # 	print(a.servicename)

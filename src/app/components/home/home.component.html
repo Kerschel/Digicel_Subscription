@@ -1,3 +1,83 @@
-<p>
-  home works!
-</p>
+
+<!-- <div *ngFor="let custom of searched | async"> -->
+  {{searched | json }}
+<!-- </div> -->
+<div class="row">
+  <div class="col-lg-5">
+      <form>
+      <div hidden class="hidden">{{loginrequest | async |json}}</div>
+      <div class="card  my-5 ">
+        <!-- Default unchecked -->
+
+          <div class="card-body ">
+            <h2 class="card-title text-center">Add New Customer</h2>
+              <div class="input-group">
+                <input [(ngModel)]="firstname"  name = "firstname"  id="firstname" class="form-control" placeholder="Firstname" required autofocus>
+                <span>&nbsp;</span>
+                <input [(ngModel)]="lastname"  name = "lastname"  id="lastname" class="form-control" placeholder="Lastname" required autofocus>
+              </div>
+              <div class='row'></div>
+              <div class="input-group">
+                  <input [(ngModel)]="email"  name = "email"  id="email" class="form-control" placeholder="Email Address" required autofocus>
+                  <span>&nbsp;</span>
+                  <input [(ngModel)]="contact"  name = "contact"  id="contact" type="tel" class="form-control" placeholder="Contact #" required autofocus>
+              </div>
+              
+              <div class='row'>
+                <table class="table table-striped table-bordered table-hover">
+                  <tr>
+                    <th *ngFor="let column of services">
+                      {{column}}
+                    </th>
+                  </tr>
+
+                  <tr>
+                    <td *ngFor="let check of services">
+                   
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id={{check}}>
+                            <label class="custom-control-label" for={{check}}></label>
+                        </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="row">
+                <div class='col-lg-5 col-md-3 col-xs-3'>
+                  <button (click)="createCustomer($event)" class="btn btn-lg btn-primary btn-block text-uppercase">Add</button>
+                </div>
+                <div class='col-lg-2 col-md-6 col-xs-6'></div>
+                <div class='col-lg-5 col-md-3  col-xs-3'>
+                    <button (click)="clearFields()" class="btn btn-lg btn-danger btn-block text-uppercase">Clear Fields</button>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+    </form>
+
+  </div>
+  <div class="col-lg-2"></div>
+
+  <div class="col-lg-5">
+      <div class="card  my-5 ">
+          <div class="card-body">
+            <h2 class="card-title text-center">Search Customer</h2>
+              <div class="input-group">
+                <input [(ngModel)]="c_firstname"  name = "c_firstname"  id="c_firstname" class="form-control" placeholder="Firstname" required autofocus>
+                <span>&nbsp;</span>
+                <input [(ngModel)]="c_lastname"  name = "c_lastname"  id="c_lastname" class="form-control" placeholder="Lastname" required autofocus>
+              </div>
+
+            <div class="row">
+                <div class='col-lg-4 col-md-4 col-xs-4'></div>
+
+              <div class='col-lg-5 col-md-3 col-xs-3'>
+                <button (click)="searchCustomer($event)" class="btn btn-lg btn-primary btn-block text-uppercase">Search</button>
+              </div>
+             
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
