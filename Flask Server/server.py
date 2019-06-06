@@ -1,7 +1,7 @@
 from flask import Flask,request,render_template,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import uuid
-# from models import Service,Customer,Subscriptions,Agent
+import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_cors import CORS
 
@@ -32,6 +32,9 @@ class Subscriptions(db.Model):
 	__tablename__ = "subscriptions"
 	id = db.Column('id',db.Integer, primary_key=True)
 	customer_id = db.Column('customerid',db.Integer,db.ForeignKey('customers.id'))
+	active = db.Column('active',db.Boolean,default=True)
+	start = db.Column('startdate',db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+	end = db.Column('enddate',db.DateTime, nullable=True)
 	service = db.Column('serviceid')
 
 	def __init__(self, customer_id, service):
@@ -93,7 +96,6 @@ def createCustomer():
 	fname = request.json['first_name']
 	lname = request.json['last_name']
 	contact = request.json['contact']
-	print ( request.json['contact'])
 	email = request.json['email']
 
 	newcustomer = Customer(fname,lname,email,contact)
@@ -108,17 +110,28 @@ def get_customer(customername):
 	cust = Customer.query.filter_by(firstname = customername).all();
 	results=[]
 	for user in cust:
-		print (user.lastname)
-		value = {"firstname":user.firstname,
+		value = {
+			"id":user.id,
+			"firstname":user.firstname,
 			"lastname":user.lastname,
 			"email":user.email,
 			"contact":user.contact}
 		results.append(value)
 	return jsonify(results)
 
-@app.route('/service',methods=['GET'])
+
+@app.route('/services',methods=['GET'])
 def get_all_services():
-  services =	Service.query.all();
+	services =	Service.query.all();
+	results=[]
+	for serve in services:
+		val = {
+		"id":serve.id,
+		"servicename":serve.servicename,
+		"price":serve.price}
+		results.append(val)	
+	return jsonify(results)
+
 	
 	# return 
 
@@ -132,6 +145,16 @@ def addSubscription():
 	db.session.commit()
 	return jsonify({'status': 200, 'msg':'User created'})
 
+@app.route('/removesubscribe',methods=['POST'])
+def deactivateSubscription():
+	cust_id = request.json['customer_id']
+	serviceid = request.json['service_id']
+	cust = Subscriptions.query.filter_by(customer_id = cust_id,service=serviceid,active=1).first();
+	cust.active=0
+	# cust.enddate = datetime.datetime.utcnow
+	db.session.commit()
+	return jsonify({'status': 200, 'msg':'Subscription updated'})
+
 
 @app.route('/subscribe/<customer_id>',methods=['GET'])
 def get_subscriptions(customer_id):
@@ -139,8 +162,9 @@ def get_subscriptions(customer_id):
 	subscriptions = cust.subscriptions
 	services=[]
 	for sub in subscriptions:
-  		services.append(sub.service)
-	return jsonify({'status': 200, 'services': services})
+  		if (sub.active):
+  				services.append(sub.service)
+	return jsonify(services)
 
 
 @app.route("/")
