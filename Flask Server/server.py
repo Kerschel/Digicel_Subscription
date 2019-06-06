@@ -1,16 +1,66 @@
 from flask import Flask,request,render_template,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import uuid
-from models import Service,Customer,Subscriptions,Agent
+# from models import Service,Customer,Subscriptions,Agent
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_cors import CORS
 
 app= Flask(__name__)
 # GCP MYSQL database connection
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.158/digicel'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.debug=True
 db = SQLAlchemy(app)
 CORS(app)
+
+
+class Customer(db.Model):
+	__tablename__ = "customers"
+	id = db.Column('id',db.Integer, primary_key=True)
+	firstname = db.Column('first_name',db.String(80))
+	lastname = db.Column('last_name',db.String(80))
+	email = db.Column('email',db.String(80))
+	contact = db.Column('contact',db.String(80))
+	subscriptions = db.relationship("Subscriptions",backref="custID",lazy="select",uselist=True)
+
+	def __init__(self, firstname, lastname,email,contact):
+		self.firstname = firstname
+		self.lastname = lastname
+		self.email = email
+		self.contact = contact
+
+class Subscriptions(db.Model):
+	__tablename__ = "subscriptions"
+	id = db.Column('id',db.Integer, primary_key=True)
+	customer_id = db.Column('customerid',db.Integer,db.ForeignKey('customers.id'))
+	service = db.Column('serviceid')
+
+	def __init__(self, customer_id, service):
+			self.service = service
+			self.customer_id = customer_id
+
+class Service(db.Model):
+	__tablename__ = "service"
+	id = db.Column('id',db.Integer, primary_key=True)
+	servicename = db.Column('servicename',db.String(80))
+	price = db.Column('price',db.Float(5))
+
+	def __init__(self, servicename, price):
+		self.servicename = servicename
+		self.price = price
+
+class Agent(db.Model):
+	__tablename__ = "agent"
+	id = db.Column('id',db.Integer, primary_key=True)
+	username = db.Column('username',db.String(80))
+	email = db.Column('email',db.String(80))
+	password = db.Column('password',db.String(80))
+	name = db.Column('name',db.String(80))
+
+	def __init__(self, username, password,name,email):
+		self.username = username
+		self.password = password
+		self.name = name
+		self.email = email
 
 @app.route('/agent',methods=['POST'])
 def createAgent():
@@ -58,12 +108,13 @@ def get_customer(customername):
 	cust = Customer.query.filter_by(firstname = customername).all();
 	results=[]
 	for user in cust:
+		print (user.lastname)
 		value = {"firstname":user.firstname,
 			"lastname":user.lastname,
 			"email":user.email,
 			"contact":user.contact}
 		results.append(value)
-	return jsonify({'results': results})
+	return jsonify(results)
 
 @app.route('/service',methods=['GET'])
 def get_all_services():
@@ -94,34 +145,12 @@ def get_subscriptions(customer_id):
 
 @app.route("/")
 def helloWorld():
-  	cust = Customer.query.get(1)
+	cust = Customer.query.get(1)
 	subscriptions = cust.subscriptions
 	serv=[]
 	for s in subscriptions:
 		serv.append(s.service)
 	return jsonify({'status':200,'services':serv})
 	
-	# sub = Subscriptions(cust_id,service)
-	# db.session.add(sub)
-	# db.session.commit()
-	# return jsonify({'status': 200, 'msg':'User created'})
-	# if value == 1:
-	# 	subscribe = 
-	# 	Subscriptions = Subscriptions.query.filter_by(id=id).first()
-	# 	Subscriptions.sub
-
-# @app.route('/customer',methods=['GET'])
-# 	def getCustomers():
-	
-
-# @app.route('/customer/<customer_name>',methods=['GET'])
-# 	def searchCustomer():
-
-
-# @app.route('/')
-# 	def home():
-# 	return render_template("index.html")
-
-# s = Service.query.all()
-# for a in s:
-# 	print(a.servicename)
+if __name__ == "__main__":
+	app.run()

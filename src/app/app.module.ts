@@ -7,13 +7,15 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './components/register/register.component';
-
+import { NavComponent } from './components/nav/nav.component';
+import { ConstantsService } from './common/services/constants.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
-    HomeComponent
+    HomeComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +23,7 @@ import { RegisterComponent } from './components/register/register.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [ConstantsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

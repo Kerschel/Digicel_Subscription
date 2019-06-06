@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Customer } from "../../models/customer";
 import { Observable } from 'rxjs';
+import { ConstantsService } from '../../common/services/constants.service'
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,10 @@ export class HomeComponent implements OnInit {
   contact:string;
   email:string;
   searched:any;
-  constructor(private http:HttpClient) { }
+  value:String;
+
+  constructor(private http:HttpClient,private constant: ConstantsService) {
+   }
   loginrequest:any;
   ngOnInit() {
 
@@ -32,9 +36,9 @@ export class HomeComponent implements OnInit {
       "email":this.email
        
     }
-    this.loginrequest= this.http.post("http://127.0.0.1:5000/customer",credentials)
+    this.loginrequest= this.http.post(this.constant.ROOTURL+"/customer",credentials)
+    // this.loginrequest= this.http.post(this.constant.LOCALURL+"/customer",credentials)
     console.log(this.loginrequest);
-    this.clearFields();
     
   }
 
@@ -46,9 +50,17 @@ export class HomeComponent implements OnInit {
   }
 
   searchCustomer(){
-    this.searched = this.http.get<Customer[]>("http://35.233.209.172/customer/Kerschel")
-    // this.searched.subscribe(data=>console.log(data));
+    // this.value = this.value.replace(" ","_");
+    // this.searched = this.http.get("https://jsonplaceholder.typicode.com/todos/1")
+    // console.log(this.value);
+    this.searched = this.http.get<Customer[]>(this.constant.LOCALURL+"/customer/"+this.value)
+    // console.log(this.constant.LOCALURL+"/customer/"+this.value)
+    this.searched.subscribe(data=>console.log(data));
+
+    // this.customer = this.http.get<Customer[]>(this.constant.LOCALURL+"/customer/"+this.value)
   }
+
+  
 
 
 }
