@@ -13,7 +13,7 @@ import { ModalComponent } from './components/modal/modal.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from './authentication.service';
 import { AuthGuardService } from './auth-guard.service';
-
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,6 +23,7 @@ import { AuthGuardService } from './auth-guard.service';
     ModalComponent
   ],
   imports: [
+    Ng4LoadingSpinnerModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

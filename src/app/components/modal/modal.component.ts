@@ -16,7 +16,7 @@ export class ModalComponent implements OnInit {
   constructor(private modalService: BsModalService) {}
  
   openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+    this.modalRef = this.modalService.show(template, {class: 'modal-md'});
   }
  
   confirm(): void {
@@ -26,6 +26,10 @@ export class ModalComponent implements OnInit {
  
   decline(): void {
     this.message = 'Declined!';
+    this.modalRef.hide();
+  }
+
+  close():void{
     this.modalRef.hide();
   }
 

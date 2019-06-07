@@ -131,6 +131,18 @@ def get_customer(customername):
 	return jsonify(results)
 
 
+@app.route('/customer/byId/<id>',methods=['GET'])
+def get_customer_byID(id):
+	user = Customer.query.filter_by(id = id).first();
+	value = {
+	"id":user.id,
+	"firstname":user.firstname,
+	"lastname":user.lastname,
+	"email":user.email,
+	"contact":user.contact}
+	return jsonify(value)
+
+
 @app.route('/services',methods=['GET'])
 def get_all_services():
 	services =	Service.query.all();
@@ -149,8 +161,6 @@ def get_all_services():
 
 @app.route('/subscribe',methods=['POST'])
 def addSubscription():
-	print("HJERE")
-  	
 	cust_id = request.json['customer_id']
 	service = request.json['service_id']
 	sub = Subscriptions(cust_id,service)
@@ -164,9 +174,25 @@ def deactivateSubscription():
 	serviceid = request.json['service_id']
 	cust = Subscriptions.query.filter_by(customer_id = cust_id,service=serviceid,active=1).first();
 	cust.active=0
-	cust.enddate = datetime.date.today()
+	cust.enddate = datetime.datetime.utcnow
 	db.session.commit()
 	return jsonify({'status': 200, 'msg':'Subscription updated'})
+
+@app.route('/recentsubscriptions/<customer_id>',methods=['GET'])
+def get_history(customer_id):
+	cust = Customer.query.get(customer_id)
+	subscriptions = cust.subscriptions
+	services=[]
+	for sub in subscriptions:
+  		if (sub.active == 0):
+  				val ={
+						"serviceid":sub.service,
+						"started":sub.start,
+						"ended":sub.end
+					}
+  				services.append(val)
+	return jsonify(services)
+
 
 
 @app.route('/subscribe/<customer_id>',methods=['GET'])

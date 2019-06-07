@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Customer } from "../../models/customer";
 import { Service } from "../../models/service";
-import { Observable } from 'rxjs';
 import { ConstantsService } from '../../common/services/constants.service'
-import { TemplateRef } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalComponent } from "../modal/modal.component"
+import { Router } from '@angular/router';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+
 
 @Component({
   providers:[ModalComponent ],
@@ -23,6 +24,7 @@ export class HomeComponent implements OnInit {
   contact:string;
   email:string;
   searched:any;
+  populated:boolean;
   value:String;
   havePlan:boolean[];
   services:any;
@@ -30,11 +32,11 @@ export class HomeComponent implements OnInit {
 
   
   
-  constructor(private http:HttpClient,private constant: ConstantsService,private modalService: BsModalService,private modal:ModalComponent) {
+  constructor(private http:HttpClient, private spinnerService: Ng4LoadingSpinnerService,private constant: ConstantsService,private router: Router,private modal:ModalComponent) {
    }
   loginrequest:any;
   ngOnInit() {
-
+    this.populated = false;
     this.getServices()
   }
 
@@ -61,30 +63,18 @@ export class HomeComponent implements OnInit {
   }
 
   searchCustomer(){
-    // this.searched = this.http.get("https://jsonplaceholder.typicode.com/todos/1")
-    this.searched = this.http.get<Customer[]>(this.constant.URL+"/customer/"+this.value)
-    
-    // console.log(this.constant.LOCALURL+"/customer/"+this.value)
-    // this.searched.subscribe(data=>console.log(data));
+    this.spinnerService.show();
 
-    // this.customer = this.http.get<Customer[]>(this.constant.LOCALURL+"/customer/"+this.value)
+    this.http.get<Customer[]>(this.constant.URL+"/customer/"+this.value).subscribe(data => {
+      this.searched = data;
+      if(this.searched.length >0)
+        this.populated = true;
+      console.log(data);
+      this.spinnerService.hide()})
   }
 
   getCustomerServices(user){
-    this.customer = user
-    this.havePlan =new Array(this.services.length+1);
-      for(var i=0;i<=this.services.length;i++){
-        this.havePlan[i]=false;
-      }
-    this.serviceList = this.http.get(this.constant.URL+"/subscribe/"+user.id).subscribe(data=>
-      { this.serviceList=data;
-        console.log(this.serviceList.length)
-      for(var i=0;i<=this.serviceList.length;i++){
-        this.havePlan[this.serviceList[i]] = true;
-        console.log("here")
-      }        
-      })
-    
+    this.router.navigate(['/subscriptions',user.id]);
   }
   
   getServices(){
@@ -97,26 +87,7 @@ export class HomeComponent implements OnInit {
     }) ; 
   }
   
-  Subscribe(event,value,index){
-    event.preventDefault();
-    // this.modal.openModal()
-    //   if(confirm("Are you sure to delete "+name)) {
-    //     console.log("Implement delete functionality here");
-    //   }
-    let subscription = {"customer_id":this.customer.id,
-                        "service_id":index}
-    if(value == true){
-      this.loginrequest= this.http.post(this.constant.URL+"/removesubscribe",subscription)
-      this.havePlan[index] = false;
-      console.log(this.loginrequest)
-    }
-    else{
-      this.loginrequest= this.http.post(this.constant.URL+"/subscribe",subscription)
-      this.havePlan[index] = true;
-      console.log(value,index)
-
-    }
-  }
+  
 
 
 
