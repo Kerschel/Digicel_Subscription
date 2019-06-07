@@ -14,6 +14,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from './authentication.service';
 import { AuthGuardService } from './auth-guard.service';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+
 @NgModule({
   declarations: [
     AppComponent,

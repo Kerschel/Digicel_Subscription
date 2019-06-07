@@ -8,7 +8,6 @@ import { ModalComponent } from "../modal/modal.component"
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
-
 @Component({
   providers:[ModalComponent ],
   selector: 'app-home',
@@ -29,6 +28,7 @@ export class HomeComponent implements OnInit {
   havePlan:boolean[];
   services:any;
   serviceList:any;
+  wait:boolean;
 
   
   
@@ -36,7 +36,15 @@ export class HomeComponent implements OnInit {
    }
   loginrequest:any;
   ngOnInit() {
-    this.populated = false;
+    this.customer = {
+      "firstname": "",
+      "lastlame": "",
+      "email": "",
+      "contact": "",
+      "id": ""
+
+    };
+    this.wait=false;
     this.getServices()
   }
 
@@ -50,11 +58,36 @@ export class HomeComponent implements OnInit {
       "email":this.email
     }
     this.loginrequest= this.http.post(this.constant.URL+"/customer",credentials)
+    this.beginTimer()
     // this.loginrequest= this.http.post(this.constant.LOCALURL+"/customer",credentials)
-    console.log(this.loginrequest);
     
   }
 
+  editCustomer(event){
+    event.preventDefault();
+    const credentials = {
+      "id":this.customer.id,
+      "first_name":this.customer.firstname,
+      "last_name":this.customer.lastname,
+      "contact":this.customer.contact,
+      "email":this.customer.email
+    }
+    this.loginrequest= this.http.post(this.constant.URL+"/customer/edit",credentials)
+    this.loginrequest.subscribe(data=>{
+      this.searchCustomer()
+    })
+    // this.loginrequest= this.http.post(this.constant.LOCALURL+"/customer",credentials)
+    
+  }
+
+  selectCustomer(person){
+    // save customer information
+    this.customer.id=person.id;
+    this.customer.firstname=person.firstname;
+    this.customer.lastname=person.lastname;
+    this.customer.contact=person.contact;
+    this.customer.email=person.email;
+  }
   clearFields(){
     this.firstname="";
     this.lastname="";
@@ -63,20 +96,29 @@ export class HomeComponent implements OnInit {
   }
 
   searchCustomer(){
+    // show the waiting icon
     this.spinnerService.show();
-
     this.http.get<Customer[]>(this.constant.URL+"/customer/"+this.value).subscribe(data => {
       this.searched = data;
       if(this.searched.length >0)
         this.populated = true;
-      console.log(data);
       this.spinnerService.hide()})
   }
 
   getCustomerServices(user){
+    // send data for subscription
     this.router.navigate(['/subscriptions',user.id]);
   }
   
+  beginTimer(){
+    this.wait = true;
+    setTimeout(() => 
+    {
+        this.wait = false;
+    },
+    3000);
+  }
+
   getServices(){
     this.http.get<Service[]>(this.constant.URL+"/services").subscribe(data => {
       this.services = data;

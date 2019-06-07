@@ -18,6 +18,9 @@
                   <input [(ngModel)]="credentials.password" name = "password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
                   <!-- <label for="inputPassword">Password</label> -->
                 </div>
+                <div *ngIf="wrongpw" class="alert alert-danger" role="alert">
+                    Invalid login, please try again
+                  </div>
   
                 <div class="custom-control custom-checkbox mb-3">
                   <input type="checkbox" class="custom-control-input" id="customCheck1">

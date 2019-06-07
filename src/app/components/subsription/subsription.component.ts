@@ -23,6 +23,7 @@ export class SubsriptionComponent implements OnInit {
   index:any;
   history:any;
   value:any;
+  nohistory:any;
 
   constructor(private route: ActivatedRoute,  private spinnerService: Ng4LoadingSpinnerService,private modal:ModalComponent,private router: Router, private http: HttpClient,private constant: ConstantsService) { }
 
@@ -31,11 +32,14 @@ export class SubsriptionComponent implements OnInit {
       "firstname":"",
       "contact":""
     }
+    this.nohistory = false;
+
     this.spinnerService.show();
     this.getServices();
   }
 
-
+    // this function gets all services to be shown on the table 
+    // it also sets the array size for the boolean array  for the number of possible plans
   getServices(){
     this.http.get<Service[]>(this.constant.URL+"/services").subscribe(data => {
       this.services = data;
@@ -50,16 +54,19 @@ export class SubsriptionComponent implements OnInit {
     }) ; 
   }
 
-
+// gets the list of deactivated plans for the customer
   getHistory(){
     this.spinnerService.show();
     this.http.get(this.constant.URL+"/recentsubscriptions/"+this.userid).subscribe(data => {
       this.history=data
+      if(this.history.length == 0){
+        this.nohistory = true;
+      }
       this.spinnerService.hide();
     });
   }
 
-
+// checks to see all the subscribed packages and shows them
   populateParams(){
     this.route.params.subscribe(req => {
       this.userid = req['id'];
@@ -90,13 +97,14 @@ export class SubsriptionComponent implements OnInit {
     this.modal.openModal(template)
     
   }
-
+// decides if to add or remove subscription package
   confirm(){
-      
     let subscription = {"customer_id":this.userid,
                         "service_id":this.index}
     if(this.value == true){
       this.action= this.http.post(this.constant.URL+"/removesubscribe",subscription)
+      this.nohistory = false;
+
       this.havePlan[this.index] = false;
       console.log(this.action)
     }

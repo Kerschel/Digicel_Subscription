@@ -17,16 +17,21 @@ export class RegisterComponent implements OnInit {
 constructor(private auth: AuthenticationService, private router: Router){}
 
   ngOnInit() {
+
   }
   register () {
-    this.auth.register(this.credentials).subscribe(
-        () => {
-            this.router.navigateByUrl('/login')
-        },
-        err => {
-            console.error(err)
-        }
-    )
+    // register only if user entered username and password
+      if(this.credentials.username.length>0 && this.credentials.password.length>0){
+        this.auth.register(this.credentials).subscribe(
+          () => {
+              this.router.navigateByUrl('/login')
+          },
+          err => {
+            // failed to connect to server
+              console.error(err)
+          }
+      )
+    }
 }
 
 }

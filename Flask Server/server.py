@@ -110,6 +110,23 @@ def createCustomer():
 	db.session.commit()
 	
 	return jsonify({'status': 200, 'msg':'User created'})
+
+
+@app.route('/customer/edit',methods=['POST'])
+def editCustomer():
+	fname = request.json['first_name']
+	lname = request.json['last_name']
+	contact = request.json['contact']
+	email = request.json['email']
+	custId = request.json['id']
+	cust = Customer.query.filter_by(id=custId).first();
+	cust.firstname = fname
+	cust.lastname = lname
+	cust.contact = contact
+	cust.email = email
+	db.session.commit()
+	
+	return jsonify({'status': 200, 'msg':'User edited'})
 	
 
 @app.route('/customer/<customername>',methods=['GET'])
@@ -174,7 +191,7 @@ def deactivateSubscription():
 	serviceid = request.json['service_id']
 	cust = Subscriptions.query.filter_by(customer_id = cust_id,service=serviceid,active=1).first();
 	cust.active=0
-	cust.enddate = datetime.datetime.utcnow
+	cust.end = datetime.datetime.utcnow()
 	db.session.commit()
 	return jsonify({'status': 200, 'msg':'Subscription updated'})
 
@@ -219,17 +236,23 @@ def helloWorld():
 
 @app.route('/login', methods=['POST'])
 def login():
-		username = request.json['username']
-		password = request.json['password']
-		result =jsonify({"error":"User does not exist"})
-		agent = Agent.query.filter_by(username=username).first();
-		
-		if (agent != None):
-			if check_password_hash(agent.password,password ):
-				access_token = create_access_token(identity = {'first_name': agent.name, 'email': agent.email})
-				result = jsonify({"token":access_token})
-			else:
-				result = jsonify({"error": "Invalid username and password"})
+		try:
+			if(request.json['username'] == None):
+				result =jsonify({"error":"User does not exist"})
+			username = request.json['username']
+			password = request.json['password']
+			result =jsonify({"error":"User does not exist"})
+			agent = Agent.query.filter_by(username=username).first();
+			
+			if (agent != None):
+				if check_password_hash(agent.password,password ):
+					access_token = create_access_token(identity = {'first_name': agent.name, 'email': agent.email})
+					result = jsonify({"token":access_token})
+				else:
+					result = jsonify({"error": "Invalid username and password"})
+		except:
+			result =jsonify({"error":"User does not exist"})
+
 
 		return result 
 
