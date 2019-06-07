@@ -9,21 +9,27 @@ import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './components/register/register.component';
 import { NavComponent } from './components/nav/nav.component';
 import { ConstantsService } from './common/services/constants.service';
+import { ModalComponent } from './components/modal/modal.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { AuthenticationService } from './authentication.service';
+import { AuthGuardService } from './auth-guard.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
     HomeComponent,
-    NavComponent
+    NavComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ModalModule.forRoot()
   ],
-  providers: [ConstantsService],
+  providers: [ConstantsService,AuthenticationService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

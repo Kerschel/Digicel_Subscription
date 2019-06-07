@@ -1,24 +1,40 @@
 
-    <!-- {{loginrequest | async |json}} -->
-        <div class="row">
-          <div class="col-sm-9 col-md-7 col-lg-6 mx-auto ">
-            <div class="card  my-5 ">
-              <div class="card-body">
-                <h2 class="card-title text-center">Digicel</h2>
-                  <div class="form-label-group">
-                    <input [(ngModel)]="username"  name = "username"  id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                    <label for="inputEmail">Email address</label>
+  <!-- {{loginrequest | async |json}} -->
+  <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-4 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+             
+            <h2 class="card-title text-center">Sign Up</h2>
+            <!-- <div class="avatar"> -->
+                <!-- <img  src="https://cdn3.iconfinder.com/data/icons/users-6/100/654853-user-men-2-512.png" alt="Avatar"> -->
+              <!-- </div> -->
+              <form (submit)="register()">
+                <div class="form-label-group shift">
+                    <input [(ngModel)]="credentials.name" name = "name"  id="inputName" class="form-control" placeholder="Name" required>
+                    <!-- <label for="inputPassword">Password</label> -->
                   </div>
-    
-                  <div class="form-label-group">
-                    <input [(ngModel)]="password" name = "password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                    <label for="inputPassword">Password</label>
+
+                <div class="form-label-group shift">
+                    <input [(ngModel)]="credentials.username"  name = "username"  id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                    <!-- <label for="inputEmail">E-mail</label> -->
                   </div>
-    
-                  <button (click)="loginAgent($event)" class="btn btn-lg btn-primary btn-block text-uppercase">Login</button>
-                  <button routerLink="/register" class="btn btn-lg btn-primary btn-block text-uppercase" >Register</button>
+
+                  <div class="form-label-group shift">
+                      <input [(ngModel)]="credentials.password"  name = "password"  id="password" class="form-control" type="password" placeholder="Password" required autofocus>
+                      <!-- <label for="inputEmail">E-mail</label> -->
+                    </div>
+
+                <div class="form-label-group shift">
+                  <input [(ngModel)]="credentials.email"  name = "email"  id="inputEmail" class="form-control" placeholder="E-mail" required autofocus>
+                  <!-- <label for="inputEmail">E-mail</label> -->
+                </div>
+
                 
-              </div>
-            </div>
+                <button type="submit" class="btn btn-lg btn-primary btn-block text-uppercase size" >Register</button>
+            </form>
+            
           </div>
         </div>
+      </div>
+    </div>

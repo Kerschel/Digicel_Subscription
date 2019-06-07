@@ -1,7 +1,7 @@
-<div class="container">
-<nav class="navbar navbar-expand-lg navbar-light ">
+<div *ngIf="auth.isLoggedIn()" class="container">
+<nav    class="navbar  navbar-light "> <!--navbar-expand-lg-->
     <a class="navbar-brand" href="#">Home</a>
-    <a class="navbar-brand digicel" href="#">Digicel</a>
+    <a class="navbar-brand digicel text-center"  href="#">Digicel</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -10,12 +10,23 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-lg-auto">
        
-        <li class="nav-item nav-style">
-            <a class="nav-link" href="#">Logout</a>
-          </li>
-        
+      <li *ngIf="auth.isLoggedIn()" class="nav-item nav-style">
+          <a routerLink="" class="nav-link" (click)="auth.logout()">Logout</a>
+        </li>
       </ul>
  
     </div>
   </nav>
+  
+
 </div>
+
+
+  <!-- {{loginrequest | async |json}} -->
+  <div *ngIf="!auth.isLoggedIn()" class="padtop container">
+  <div  class="row">
+      <div class="col-sm-9 col-md-7 col-lg-4 mx-auto">
+          <h2 class="digicel text-center">Digicel</h2>
+      </div>
+    </div>
+  </div>

@@ -4,12 +4,18 @@ import { Customer } from "../../models/customer";
 import { Service } from "../../models/service";
 import { Observable } from 'rxjs';
 import { ConstantsService } from '../../common/services/constants.service'
+import { TemplateRef } from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { ModalComponent } from "../modal/modal.component"
 
 @Component({
+  providers:[ModalComponent ],
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
+
 export class HomeComponent implements OnInit {
   customer:any;
   firstname:string;
@@ -24,7 +30,7 @@ export class HomeComponent implements OnInit {
 
   
   
-  constructor(private http:HttpClient,private constant: ConstantsService) {
+  constructor(private http:HttpClient,private constant: ConstantsService,private modalService: BsModalService,private modal:ModalComponent) {
    }
   loginrequest:any;
   ngOnInit() {
@@ -55,9 +61,7 @@ export class HomeComponent implements OnInit {
   }
 
   searchCustomer(){
-    // this.value = this.value.replace(" ","_");
     // this.searched = this.http.get("https://jsonplaceholder.typicode.com/todos/1")
-    console.log(this.value);
     this.searched = this.http.get<Customer[]>(this.constant.URL+"/customer/"+this.value)
     
     // console.log(this.constant.LOCALURL+"/customer/"+this.value)
@@ -93,8 +97,12 @@ export class HomeComponent implements OnInit {
     }) ; 
   }
   
-  test(event,value,index){
+  Subscribe(event,value,index){
     event.preventDefault();
+    // this.modal.openModal()
+    //   if(confirm("Are you sure to delete "+name)) {
+    //     console.log("Implement delete functionality here");
+    //   }
     let subscription = {"customer_id":this.customer.id,
                         "service_id":index}
     if(value == true){
@@ -109,5 +117,7 @@ export class HomeComponent implements OnInit {
 
     }
   }
+
+
 
 }

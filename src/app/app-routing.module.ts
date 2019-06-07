@@ -3,11 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { AuthGuardService } from './auth-guard.service';
+
 
 const routes: Routes = [
   {path:"login",component:LoginComponent},
   {path:"",component:LoginComponent},
-  {path:"home",component:HomeComponent},
+  {path:"home",component:HomeComponent,canActivate:[AuthGuardService]  },
   {path:"register",component:RegisterComponent}
   
 ];
@@ -15,7 +18,7 @@ const routes: Routes = [
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes),ModalModule.forRoot()],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

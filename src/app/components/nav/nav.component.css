@@ -7,4 +7,18 @@
 
 .digicel{
   color:red;
+  font-weight: 1000;
+  font-size:40px;
+  
 }
+
+#nav ul {
+  display: inline-block;
+  list-style-type: none;
+} 
+
+.padtop{
+  padding-top:20px;
+}
+
+

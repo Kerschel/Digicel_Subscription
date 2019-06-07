@@ -3,13 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 import uuid
 import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import JWTManager
+
 from flask_cors import CORS
 
 app= Flask(__name__)
 # GCP MYSQL database connection
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.158/digicel'
+app.config['JWT_SECRET_KEY'] = 'secret'
+
 app.debug=True
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
+
 CORS(app)
 
 
@@ -56,7 +63,7 @@ class Agent(db.Model):
 	id = db.Column('id',db.Integer, primary_key=True)
 	username = db.Column('username',db.String(80))
 	email = db.Column('email',db.String(80))
-	password = db.Column('password',db.String(80))
+	password = db.Column('password',db.String(200))
 	name = db.Column('name',db.String(80))
 
 	def __init__(self, username, password,name,email):
@@ -68,7 +75,7 @@ class Agent(db.Model):
 @app.route('/agent',methods=['POST'])
 def createAgent():
 	username = request.json['username']
-	password = generate_password_hash(request.json['password'],method='sha-256')
+	password = generate_password_hash(request.json['password'], method='sha256')
 	name = request.json['name']
 	email = request.json['email']
 
@@ -107,7 +114,11 @@ def createCustomer():
 
 @app.route('/customer/<customername>',methods=['GET'])
 def get_customer(customername):
-	cust = Customer.query.filter_by(firstname = customername).all();
+	name = customername.split(" ")
+	if(len(name) >1):
+		cust = Customer.query.filter_by(firstname = name[0],lastname=name[1]).all();
+	else:
+		cust = Customer.query.filter_by(firstname = customername).all();
 	results=[]
 	for user in cust:
 		value = {
@@ -138,6 +149,8 @@ def get_all_services():
 
 @app.route('/subscribe',methods=['POST'])
 def addSubscription():
+	print("HJERE")
+  	
 	cust_id = request.json['customer_id']
 	service = request.json['service_id']
 	sub = Subscriptions(cust_id,service)
@@ -151,7 +164,7 @@ def deactivateSubscription():
 	serviceid = request.json['service_id']
 	cust = Subscriptions.query.filter_by(customer_id = cust_id,service=serviceid,active=1).first();
 	cust.active=0
-	# cust.enddate = datetime.datetime.utcnow
+	cust.enddate = datetime.date.today()
 	db.session.commit()
 	return jsonify({'status': 200, 'msg':'Subscription updated'})
 
@@ -175,6 +188,25 @@ def helloWorld():
 	for s in subscriptions:
 		serv.append(s.service)
 	return jsonify({'status':200,'services':serv})
+
+
+
+@app.route('/login', methods=['POST'])
+def login():
+		username = request.json['username']
+		password = request.json['password']
+		result =jsonify({"error":"User does not exist"})
+		agent = Agent.query.filter_by(username=username).first();
+		
+		if (agent != None):
+			if check_password_hash(agent.password,password ):
+				access_token = create_access_token(identity = {'first_name': agent.name, 'email': agent.email})
+				result = jsonify({"token":access_token})
+			else:
+				result = jsonify({"error": "Invalid username and password"})
+
+		return result 
+
 	
 if __name__ == "__main__":
 	app.run()
