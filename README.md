@@ -1,8 +1,10 @@
 # Customer Subscription application
 This application allows Agents to create customers and subscribe them to a phone plan.
 # Live site:
->https://digicel-customers.appspot.com/
+> https://digicel-customers.appspot.com/
 
+## REST API Endpoint
+> https://flask-api-243101.appspot.com
 
 ## Local Setup
 ### Front-end
