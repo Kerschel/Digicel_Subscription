@@ -78,10 +78,12 @@ def createAgent():
 	password = generate_password_hash(request.json['password'], method='sha256')
 	name = request.json['name']
 	email = request.json['email']
-
-	newAgent = Agent(username,password,name,email)
-	db.session.add(newAgent)
-	db.session.commit()
+	try:
+		newAgent = Agent(username,password,name,email)
+		db.session.add(newAgent)
+		db.session.commit()
+	except:
+		return jsonify({'error': 400, 'msg':'Agent already exist'})
 	return jsonify({'status': 200, 'msg':'Agent created'})
 	 	
 # @app.route('/agent',methods['POST'])
