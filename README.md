@@ -1,5 +1,14 @@
 # Customer Subscription application
-This application allows Agents to create customers and subscribe them to a phone plan.
+This application allows Agents to create customers and subscribe them to a phone plan. Features present are:
+1. Sign up page for agents
+1. Sign in for agent
+1. Add a customer to database
+1. Search for customers by first name or by first name and last name combination
+1. Add or remove a customer from subscriptions of plans
+1. Edit customer information
+1. View history of plans that were no longer active
+
+I added the plan history in the case where you would want to use Data Mining to provide recommendations based on previous plans.
 # Live site:
 > https://digicel-customers.appspot.com/
 
