@@ -7,7 +7,8 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalComponent } from "../modal/modal.component"
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import Swal from 'sweetalert2'
 @Component({
   providers:[ModalComponent ],
   selector: 'app-home',
@@ -32,10 +33,13 @@ export class HomeComponent implements OnInit {
 
   
   
-  constructor(private http:HttpClient, private spinnerService: Ng4LoadingSpinnerService,private constant: ConstantsService,private router: Router,private modal:ModalComponent) {
+  constructor(private http:HttpClient,private sweet:SweetAlert2Module, private spinnerService: Ng4LoadingSpinnerService,private constant: ConstantsService,private router: Router,private modal:ModalComponent) {
    }
   loginrequest:any;
   ngOnInit() {
+  
+     
+
     this.customer = {
       "firstname": "",
       "lastlame": "",
@@ -48,6 +52,10 @@ export class HomeComponent implements OnInit {
     this.getServices()
   }
 
+stuff(){
+  
+}
+
   createCustomer(event){
     event.preventDefault();
     console.log(this.firstname)
@@ -58,7 +66,12 @@ export class HomeComponent implements OnInit {
       "email":this.email
     }
     this.loginrequest= this.http.post(this.constant.URL+"/customer",credentials)
-    this.beginTimer()
+    Swal.fire(
+      'Created!',
+      'Customer created',
+      'success'
+    )
+    // this.beginTimer()
     // this.loginrequest= this.http.post(this.constant.LOCALURL+"/customer",credentials)
     
   }

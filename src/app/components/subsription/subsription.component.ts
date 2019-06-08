@@ -5,7 +5,7 @@ import { Service } from "../../models/service";
 import { ConstantsService } from '../../common/services/constants.service'
 import { ModalComponent } from "../modal/modal.component"
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-
+import Swal from 'sweetalert2'
 @Component({
   providers:[ModalComponent ],
 
@@ -104,13 +104,21 @@ export class SubsriptionComponent implements OnInit {
     if(this.value == true){
       this.action= this.http.post(this.constant.URL+"/removesubscribe",subscription)
       this.nohistory = false;
-
       this.havePlan[this.index] = false;
-      console.log(this.action)
+      Swal.fire(
+        'Removed!',
+        'Unsubscribed to plan',
+        'success'
+      )
     }
     else{
       this.action= this.http.post(this.constant.URL+"/subscribe",subscription)
       this.havePlan[this.index] = true;
+      Swal.fire(
+        'Added!',
+        'Subscribed to plan',
+        'success'
+      )
 
     }
     this.modal.close();

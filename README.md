@@ -1,4 +1,5 @@
 # Customer Subscription application
+This application allows Agents to create customers and subscribe them to a phone plan.
 # Live site:
 >https://digicel-customers.appspot.com/
 

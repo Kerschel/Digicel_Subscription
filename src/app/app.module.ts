@@ -14,6 +14,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from './authentication.service';
 import { AuthGuardService } from './auth-guard.service';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,12 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
     ModalComponent
   ],
   imports: [
+    SweetAlert2Module.forRoot({
+      buttonsStyling: false,
+      customClass: 'modal-content',
+      confirmButtonClass: 'btn btn-primary',
+      cancelButtonClass: 'btn'
+  }),
     Ng4LoadingSpinnerModule.forRoot(),
     BrowserModule,
     AppRoutingModule,

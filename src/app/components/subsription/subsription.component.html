@@ -32,7 +32,7 @@
 
               <tbody>
                   <tr>
-                     
+                      
                     <td>{{user.firstname}}</td>
                     <td>{{user.contact}}</td>
                       <td  style="padding-left:30px" *ngFor="let check of havePlan | slice:1; let i = index;">
@@ -84,6 +84,9 @@
               </tr>
           </tbody>
         </table>
+
+
+        
 <ng-template #template>
   <div class="modal-body text-center">
     <h3 *ngIf="value">Do you want to deactivate this plan?</h3>
