@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConstantsService {
-  readonly URL: string = 'http://35.230.123.188';
-  // readonly URL: string = 'http://127.0.0.1:5000';
+  // readonly ROOTURL: string = 'http://35.233.209.172';
+  readonly URL: string = 'https://flask-api-243101.appspot.com';
 
   constructor() { }
 }

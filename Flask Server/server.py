@@ -9,8 +9,8 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 app= Flask(__name__)
-# GCP MYSQL database connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kerschel:digiceldb@34.83.251.158/digicel'
+# https://www.freemysqlhosting.net MYSQL database connection
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sql9294873:fvYzIHBASd@sql9.freemysqlhosting.net/sql9294873'
 app.config['JWT_SECRET_KEY'] = 'secret'
 
 app.debug=True
