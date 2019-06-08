@@ -225,12 +225,7 @@ def get_subscriptions(customer_id):
 
 @app.route("/")
 def helloWorld():
-	cust = Customer.query.get(1)
-	subscriptions = cust.subscriptions
-	serv=[]
-	for s in subscriptions:
-		serv.append(s.service)
-	return jsonify({'status':200,'services':serv})
+	return "Welcome to my server"
 
 
 
