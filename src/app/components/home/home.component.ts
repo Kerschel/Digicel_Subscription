@@ -65,12 +65,23 @@ stuff(){
       "contact":this.contact,
       "email":this.email
     }
-    this.loginrequest= this.http.post(this.constant.URL+"/customer",credentials)
-    Swal.fire(
-      'Created!',
-      'Customer created',
-      'success'
-    )
+    // auto form validation with bootstrap was not working with my google chrome
+    if(this.firstname && this.lastname && this.contact){
+      this.loginrequest= this.http.post(this.constant.URL+"/customer",credentials)
+      Swal.fire(
+        'Created!',
+        'Customer created',
+        'success'
+      )
+    }
+    else{
+      Swal.fire(
+        'Error!',
+        'Missing fields',
+        'error'
+      )
+    }
+    
     // this.beginTimer()
     // this.loginrequest= this.http.post(this.constant.LOCALURL+"/customer",credentials)
     
